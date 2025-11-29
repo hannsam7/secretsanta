@@ -116,12 +116,16 @@
 
         // Initialize Firebase
         document.getElementById('initFirebase').addEventListener('click', () => {
-            const config = {
-                apiKey: document.getElementById('apiKey').value.trim(),
-                authDomain: document.getElementById('authDomain').value.trim(),
-                databaseURL: document.getElementById('databaseURL').value.trim(),
-                projectId: document.getElementById('projectId').value.trim()
-            };
+            const firebaseConfig = {
+  apiKey: "AIzaSyCN55DxIRnDOCI9IYnxUszKBMAqhV-pOTs",
+  authDomain: "secretsanta-19266.firebaseapp.com",
+  databaseURL: "https://secretsanta-19266-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "secretsanta-19266",
+  storageBucket: "secretsanta-19266.firebasestorage.app",
+  messagingSenderId: "779264620520",
+  appId: "1:779264620520:web:a94f220d045febc316565d",
+  measurementId: "G-JV7LZ3JTVS"
+};
 
             if (!config.apiKey || !config.databaseURL) {
                 alert('Please fill in at least API Key and Database URL');
