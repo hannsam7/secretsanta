@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa Picker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-red-50 via-green-50 to-red-50 p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                    </svg>
+                    <h1 class="text-3xl font-bold text-gray-800">Secret Santa</h1>
+                </div>
+                <button id="copyBtn" class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                    </svg>
+                    <span id="copyText">Share Link</span>
+                </button>
+            </div>
+
+            <!-- Add Participants Section -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    Add Participants
+                </h2>
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <input type="text" id="nameInput" placeholder="Name" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <input type="email" id="emailInput" placeholder="Email" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <button id="addBtn" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Add</button>
+                </div>
+
+                <div id="participantsList" class="space-y-2 mb-4"></div>
+
+                <div id="generateSection" class="mt-4 text-center hidden">
+                    <p class="text-gray-600 mb-3"><span id="participantCount">0</span> participants ready</p>
+                    <button id="generateBtn" class="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Generate Secret Santa Assignments
+                    </button>
+                </div>
+            </div>
+
+            <!-- Find Assignment Section -->
+            <div id="findSection" class="border-t pt-6 hidden">
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Find Your Assignment
+                </h2>
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <input type="email" id="searchEmail" placeholder="Enter your email" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <button id="revealBtn" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Reveal</button>
+                </div>
+
+                <div id="assignmentResult" class="hidden bg-green-50 border-2 border-green-500 rounded-lg p-6 text-center">
+                    <p class="text-lg mb-2">You're Secret Santa for:</p>
+                    <p class="text-3xl font-bold text-green-700" id="assignmentName"></p>
+                    <p class="text-gray-600 mt-2">🎁 Keep it secret! 🎁</p>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button id="resetBtn" class="text-sm text-gray-500 hover:text-red-500 transition-colors">Reset Everything</button>
+            </div>
+        </div>
+
+        <div class="text-center text-gray-600 text-sm">
+            Share the link with your friends so they can add themselves and find their assignments!
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let participants = [];
+        let assignments = {};
+        let isAssigned = false;
+
+        // Load data from localStorage
+        function loadData() {
+            const savedParticipants = localStorage.getItem('secretSantaParticipants');
+            const savedAssignments = localStorage.getItem('secretSantaAssignments');
+            
+            if (savedParticipants) {
+                participants = JSON.parse(savedParticipants);
+                renderParticipants();
+            }
+            if (savedAssignments) {
+                assignments = JSON.parse(savedAssignments);
+                isAssigned = Object.keys(assignments).length > 0;
+                if (isAssigned) {
+                    document.getElementById('findSection').classList.remove('hidden');
+                }
+            }
+        }
+
+        // Save data to localStorage
+        function saveParticipants() {
+            localStorage.setItem('secretSantaParticipants', JSON.stringify(participants));
+        }
+
+        function saveAssignments() {
+            localStorage.setItem('secretSantaAssignments', JSON.stringify(assignments));
+        }
+
+        // Add participant
+        function addParticipant() {
+            const name = document.getElementById('nameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
+            
+            if (name && email) {
+                participants.push({ name, email });
+                saveParticipants();
+                renderParticipants();
+                document.getElementById('nameInput').value = '';
+                document.getElementById('emailInput').value = '';
+            }
+        }
+
+        // Remove participant
+        function removeParticipant(index) {
+            participants.splice(index, 1);
+            saveParticipants();
+            renderParticipants();
+        }
+
+        // Render participants list
+        function renderParticipants() {
+            const list = document.getElementById('participantsList');
+            list.innerHTML = '';
+            
+            participants.forEach((p, i) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-lg';
+                div.innerHTML = `
+                    <div>
+                        <div class="font-medium">${p.name}</div>
+                        <div class="text-sm text-gray-600">${p.email}</div>
+                    </div>
+                    <button onclick="removeParticipant(${i})" class="text-red-500 hover:text-red-700">Remove</button>
+                `;
+                list.appendChild(div);
+            });
+
+            const generateSection = document.getElementById('generateSection');
+            if (participants.length > 0) {
+                generateSection.classList.remove('hidden');
+                document.getElementById('participantCount').textContent = participants.length;
+            } else {
+                generateSection.classList.add('hidden');
+            }
+        }
+
+        // Generate assignments
+        function generateAssignments() {
+            if (participants.length < 2) {
+                alert('Need at least 2 participants!');
+                return;
+            }
+
+            let attempts = 0;
+            const maxAttempts = 100;
+
+            while (attempts < maxAttempts) {
+                assignments = {};
+                const shuffled = [...participants].sort(() => Math.random() - 0.5);
+                let valid = true;
+
+                for (let i = 0; i < participants.length; i++) {
+                    if (participants[i].email === shuffled[i].email) {
+                        valid = false;
+                        break;
+                    }
+                    assignments[participants[i].email] = shuffled[i];
+                }
+
+                if (valid) {
+                    isAssigned = true;
+                    saveAssignments();
+                    document.getElementById('findSection').classList.remove('hidden');
+                    alert('Secret Santa assignments generated! Everyone can now find their match.');
+                    return;
+                }
+                attempts++;
+            }
+
+            alert('Could not create valid assignments. Try again!');
+        }
+
+        // Find assignment
+        function findAssignment() {
+            const email = document.getElementById('searchEmail').value.trim().toLowerCase();
+            const resultDiv = document.getElementById('assignmentResult');
+            
+            if (assignments[email]) {
+                document.getElementById('assignmentName').textContent = assignments[email].name;
+                resultDiv.classList.remove('hidden');
+            } else {
+                alert('Email not found or assignments not generated yet!');
+                resultDiv.classList.add('hidden');
+            }
+        }
+
+        // Copy link
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href);
+            const btn = document.getElementById('copyText');
+            btn.textContent = 'Copied!';
+            setTimeout(() => {
+                btn.textContent = 'Share Link';
+            }, 2000);
+        }
+
+        // Reset all
+        function resetAll() {
+            if (confirm('Reset everything? This will delete all participants and assignments.')) {
+                participants = [];
+                assignments = {};
+                isAssigned = false;
+                localStorage.removeItem('secretSantaParticipants');
+                localStorage.removeItem('secretSantaAssignments');
+                renderParticipants();
+                document.getElementById('findSection').classList.add('hidden');
+                document.getElementById('assignmentResult').classList.add('hidden');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('addBtn').addEventListener('click', addParticipant);
+        document.getElementById('nameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addParticipant();
+        });
+        document.getElementById('emailInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addParticipant();
+        });
+        document.getElementById('generateBtn').addEventListener('click', generateAssignments);
+        document.getElementById('revealBtn').addEventListener('click', findAssignment);
+        document.getElementById('searchEmail').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') findAssignment();
+        });
+        document.getElementById('copyBtn').addEventListener('click', copyLink);
+        document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+        // Make removeParticipant available globally
+        window.removeParticipant = removeParticipant;
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
