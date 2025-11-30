@@ -126,16 +126,23 @@
 
         // Add participant
         function addParticipant() {
-            const name = document.getElementById('nameInput').value.trim();
-            const email = document.getElementById('emailInput').value.trim().toLowerCase();
-            
-            if (name && email) {
-                const newParticipants = [...participants, { name, email }];
-                db.ref('participants').set(newParticipants);
-                document.getElementById('nameInput').value = '';
-                document.getElementById('emailInput').value = '';
-            }
-        }
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim().toLowerCase();
+
+    if (!name || !email) return;
+
+    // Check for duplicate emails
+    if (participants.some(p => p.email === email)) {
+        alert("This email is already added!");
+        return;
+    }
+
+    const newParticipants = [...participants, { name, email }];
+    db.ref('participants').set(newParticipants);
+
+    document.getElementById('nameInput').value = '';
+    document.getElementById('emailInput').value = '';
+}
 
         // Remove participant
         function removeParticipant(index) {
