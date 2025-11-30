@@ -171,53 +171,56 @@
         }
 
         // Generate Secret Santa assignments
-        function generateAssignments() {
-            if (participants.length < 2) {
-                alert('Need at least 2 participants!');
-                return;
+        // Generate Secret Santa assignments
+function generateAssignments() {
+    if (participants.length < 2) {
+        alert('Need at least 2 participants!');
+        return;
+    }
+
+    let attempts = 0;
+    const maxAttempts = 100;
+    let newAssignments = {};
+
+    while (attempts < maxAttempts) {
+        newAssignments = {};
+        const shuffled = [...participants].sort(() => Math.random() - 0.5);
+        let valid = true;
+
+        for (let i = 0; i < participants.length; i++) {
+            if (participants[i].email === shuffled[i].email) {
+                valid = false;
+                break;
             }
-
-            let attempts = 0;
-            const maxAttempts = 100;
-            let newAssignments = {};
-
-            while (attempts < maxAttempts) {
-                newAssignments = {};
-                const shuffled = [...participants].sort(() => Math.random() - 0.5);
-                let valid = true;
-
-                for (let i = 0; i < participants.length; i++) {
-                    if (participants[i].email === shuffled[i].email) {
-                        valid = false;
-                        break;
-                    }
-                    newAssignments[participants[i].email] = shuffled[i];
-                }
-
-                if (valid) {
-                    db.ref('assignments').set(newAssignments);
-                    alert('Secret Santa assignments generated! Everyone can now find their match.');
-                    return;
-                }
-                attempts++;
-            }
-
-            alert('Could not create valid assignments. Try again!');
+            const key = participants[i].email.replace(/\./g, "_");
+            newAssignments[key] = shuffled[i];
         }
+
+        if (valid) {
+            db.ref('assignments').set(newAssignments);
+            alert('Secret Santa assignments generated!');
+            return;
+        }
+        attempts++;
+    }
+
+    alert('Could not create valid assignments.');
+}
+
 
         // Find your assignment
         function findAssignment() {
-            const email = document.getElementById('searchEmail').value.trim().toLowerCase();
-            const resultDiv = document.getElementById('assignmentResult');
-            
-            if (assignments[email]) {
-                document.getElementById('assignmentName').textContent = assignments[email].name;
-                resultDiv.classList.remove('hidden');
-            } else {
-                alert('Email not found or assignments not generated yet!');
-                resultDiv.classList.add('hidden');
-            }
-        }
+    const email = document.getElementById('searchEmail').value.trim().toLowerCase();
+    const key = email.replace(/\./g, "_");
+    
+    if (assignments[key]) {
+        document.getElementById('assignmentName').textContent = assignments[key].name;
+        document.getElementById('assignmentResult').classList.remove('hidden');
+    } else {
+        alert('Email not found or assignments not generated yet!');
+    }
+}
+
 
         // Copy link to clipboard
         function copyLink() {
